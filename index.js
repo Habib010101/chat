@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+app.use(express.static("public"));
 app.use(express.json());
 
 const messages = [];
@@ -28,9 +29,9 @@ app.post("/messages", (req, res) => {
     createdAt: new Date().toISOString()
   }
   messages.push(message);
-  res.status(201).send("Message sent.");
+  res.status(201).json(message);
 })
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}.`);
 });
