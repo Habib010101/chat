@@ -1,8 +1,8 @@
 // Get references to DOM elements from index.html
 const messageDiv = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
-const text = document.getElementById("text");
-const sender = document.getElementById("sender");
+const textField = document.getElementById("text");
+const senderField = document.getElementById("sender");
 
 function appendMessageToMessageDiv(message) {
   const e = document.createElement("p");
@@ -11,13 +11,9 @@ function appendMessageToMessageDiv(message) {
 }
 
 async function loadMessages() {
-  // Send GET request to API
   const response = await fetch("/api/messages");
-
-  // Parse JSON response into JavaScript array
   const messages = await response.json();
 
-  // Clear current messages before re-rendering
   messageDiv.innerHTML = "";
 
   messages.forEach(message => appendMessageToMessageDiv(message));
@@ -29,9 +25,9 @@ messageForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   // Create message object from input values
-  const message = {
-    text: text.value,
-    sender: sender.value
+  const newMessage = {
+    text: textField.value,
+    sender: senderField.value
   };
   
   // Insert message into messages table
