@@ -20,16 +20,7 @@ async function loadMessages() {
   // Clear current messages before re-rendering
   messageDiv.innerHTML = "";
 
-  // Loop through messages and display each one
-  messages.forEach(message => {
-    const m = document.createElement("p");
-
-    // Display sender, text, and timestamp
-    m.textContent = `${message.sender}: ${message.text} (${message.created_at})`;
-
-    // Add message to DOM
-    messageDiv.appendChild(m);
-  });
+  messages.forEach(message => appendMessageToMessageDiv(message));
 }
 
 // Handle form submission (sending a new message)
@@ -42,22 +33,21 @@ messageForm.addEventListener("submit", async (event) => {
     text: text.value,
     sender: sender.value
   };
-
-  // Send POST request to backend API
-  await fetch("/api/messages", {
+  
+  // Insert message into messages table
+  const response = await fetch("/api/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(message)
+    body: JSON.stringify(newMessage)
   });
 
-  // Clear input fields after sending
-  text.value = "";
-  sender.value = "";
+  const messageFromResponse = await response.json();
+  messageForm.reset();
 
-  // Reload messages to render the new one
-  await loadMessages();
+  // Load new message into chat
+  appendMessageToMessageDiv(messageFromResponse);
 });
 
 // Initial load of messages when page opens
