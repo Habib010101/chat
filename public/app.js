@@ -4,7 +4,12 @@ const messageForm = document.getElementById("message-form");
 const text = document.getElementById("text");
 const sender = document.getElementById("sender");
 
-// Fetch all messages from backend and render them
+function appendMessageToMessageDiv(message) {
+  const e = document.createElement("p");
+  e.textContent = `${message.sender}: ${message.text} (${message.created_at})`;
+  messageDiv.appendChild(e);
+}
+
 async function loadMessages() {
   // Send GET request to API
   const response = await fetch("/api/messages");
