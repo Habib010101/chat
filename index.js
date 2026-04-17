@@ -11,8 +11,22 @@ app.get("/", (req, res) => {
   res.send(`Server is running on port ${port}...`);
 });
 
-app.get("/messages", (req, res) => {
-  res.json(messages);
+// Chat start page
+app.use("/chat", express.static("public"));
+
+app.get("/chat", (res, req) => {
+  res.status(200);
+});
+
+// API to display messages
+app.get("/api/messages", async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM messages ORDER BY created_at");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "Error!"});
+  }
 });
 
 app.post("/messages", (req, res) => {

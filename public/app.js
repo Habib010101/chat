@@ -5,7 +5,10 @@ const sender = document.getElementById("sender");
 
 
 async function loadMessages() {
-  const response = await fetch("/messages");
+  // Send GET request to API
+  const response = await fetch("/api/messages");
+
+  // Parse JSON response into JavaScript array
   const messages = await response.json();
 
   messageDiv.innerHTML = "";
