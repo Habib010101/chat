@@ -16,12 +16,9 @@ const pool = new Pool({
 const express = require("express");
 const app = express();
 const port = 3000;
-
-app.use(express.static("public"));
 app.use(express.json());
 
-const messages = [];
-
+// Main page (later login page)
 app.get("/", (req, res) => {
   res.send(`Server is running on port ${port}...`);
 });
@@ -44,7 +41,8 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-app.post("/messages", (req, res) => {
+// API to send message
+app.post("/api/messages", async (req, res) => {
   const { text, sender } = req.body;
 
   if (!text || !sender) {
