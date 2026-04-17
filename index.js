@@ -49,15 +49,17 @@ app.post("/api/messages", async (req, res) => {
     return res.status(400).json({ error: "Text and its sender are required!" });
   }
 
-  const message = {
-    id: messages.length,
-    text: text,
-    sender: sender,
-    createdAt: new Date().toISOString()
+  // pool.query(INSERT INTO messages (text, sender) VALUES ( ${text}, ${sender}));
+  // If text is something malicious, do i want it merged into the SQL string itself?
+  try {
+    // rows is an array with affected row(s)
+    const { rows } = await pool.query("INSERT INTO messages (text, sender, created_at) VALUES ($1, $2, NOW()) RETURNING *", [text, sender]);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "Error!"});
   }
-  messages.push(message);
-  res.status(201).json(message);
-})
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);
