@@ -13,8 +13,21 @@ require('dotenv').config({
 const app = Express();
 const server = Http.createServer(app);
 const port = 3000;
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+    maxAge: 1000 * 60 * 5 // 5 minutes
+  }
+});
+
+app.use(Express.static(Path.join(__dirname, 'public')));
 app.use(Express.json());
-app.use("/chat", Express.static("public"));
+app.use(sessionMiddleware);
 
 const pool = new Pool({
   user: process.env.DB_USER,
