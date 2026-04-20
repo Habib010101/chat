@@ -4,17 +4,148 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat App</title>
+  <style>
+    body {
+      background-color: #0b141a; /* Dark Theme Hintergrund */
+      color: #e9edef;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+    }
+
+    #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #111b21;
+    }
+
+    .logo-placeholder {
+      width: 150px;
+      height: 150px;
+      background-color: #2a3942;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #8696a0;
+      border: 2px dashed #8696a0;
+      padding: 10px;
+    }
+
+    #start-chat-btn {
+      padding: 12px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 25px;
+      background-color: #00a884;
+      color: #111b21;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #chat-ui {
+      display: none; /* Zuerst unsichtbar */
+      padding-bottom: 80px; /* Platz für das fixierte Formular */
+    }
+
+    h1 {
+      text-align: center;
+      color: #e9edef;
+    }
+
+    #messages {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 10px;
+    }
+
+    /* Standard-Nachricht (wird als "empfangen" behandelt, da app.js <p> nutzt) */
+    #messages p {
+      background-color: #202c33; /* Dunkle Chat-Blase */
+      color: #e9edef;
+      padding: 10px 15px;
+      border-radius: 18px;
+      border-top-left-radius: 5px;
+      max-width: 60%;
+      margin: 0;
+      align-self: flex-start;
+      word-wrap: break-word;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+      line-height: 1.4;
+    }
+
+    /* Klasse für gesendete Nachrichten (kann der Kollege später in JS nutzen) */
+    #messages p.sent {
+      background-color: #005c4b; /* Dunkelgrün für gesendete Nachrichten */
+      align-self: flex-end;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 5px;
+    }
+
+    #message-form {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      padding: 15px;
+      background-color: #202c33;
+      box-sizing: border-box;
+      border-top: 1px solid #2a3942;
+      gap: 10px;
+    }
+
+    #message-form input {
+      padding: 12px;
+      border-radius: 20px;
+      border: 1px solid #2a3942;
+      background-color: #2a3942;
+      color: #e9edef;
+    }
+
+    #message-form input::placeholder {
+      color: #8696a0;
+    }
+
+    #text {
+      flex: 1; /* Nimmt den restlichen Platz ein */
+    }
+
+    #message-form button {
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      background-color: #00a884;
+      color: #111b21;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Chat App</h1>
+  <!-- Startseite -->
+  <div id="start-screen">
+    <div class="logo-placeholder" style="border: none; background-color: transparent;">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/028/243/385/small/cute-dog-on-pet-themed-background-ai-generative-free-photo.jpg"" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+      <img src="https://www.tierfotostudio.at/wp-content/uploads/2025/01/Dog-Standing-in-snow-landscape.jpeg" alt="" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    </div>
+    <button id="start-chat-btn" onclick="document.getElementById('start-screen').style.display='none'; document.getElementById('chat-ui').style.display='block';">Start Chaten</button>
+  </div>
 
-  <div id="messages"></div>
-
-  <form id="message-form">
-    <input id="text" type="text" placeholder="Message" />
-    <input id="sender" type="text" placeholder="Sender" />
-    <button type="submit">Send</button>
-  </form>
+  <!-- Haupt-Chat (Dark Theme) -->
+  <div id="chat-ui">
+    <h1>Chat App</h1>
+    <div id="messages"></div>
+    <form id="message-form">
+      <input id="text" type="text" placeholder="Message" />
+      <input id="sender" type="text" placeholder="Sender" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
 
   <script src="app.js"></script>
 </body>
