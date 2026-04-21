@@ -39,6 +39,8 @@ app.get("/api/messages", async (req, res) => {
 });
 
 // API to send message
+// Now messages are being sent through web socket
+/*
 app.post("/api/messages", async (req, res) => {
   const { text, sender } = req.body;
 
@@ -57,7 +59,39 @@ app.post("/api/messages", async (req, res) => {
     res.status(500).send({ error: "Error!"});
   }
 });
+*/
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}.`);
+});
+
+const wss = new WebSocket.Server({ server });
+
+wss.on("connection", (ws) => {
+  console.log("Client connected.");
+
+  ws.on("message", async (rawMessage) => {
+    console.log(`Received message: ${rawMessage}`);
+
+    try {
+      const {text, sender} = JSON.parse(rawMessage.toString());
+
+      if (!text?.trim() || !sender?.trim()) {
+        return;
+      }
+
+      const { rows } = await pool.query("INSERT INTO messages (text, sender, created_at) VALUES ($1, $2, NOW()) RETURNING *", [text, sender]);
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(rows[0]));
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  ws.on("close", () => {
+    console.log("Client disconnected.");
+  });
 });
