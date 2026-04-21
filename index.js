@@ -1,10 +1,19 @@
-const path = require("path");
+const Express = require("express");
+const Http = require("http");
+const WebSocket = require("ws");
+const Path = require("path");
+const { Pool } = require("pg");
 require("dotenv").config({
   override: true,
-  path: path.join( __dirname, ".env")
+  path: Path.join( __dirname, ".env")
 });
 
-const { Pool } = require("pg");
+const app = Express();
+const server = Http.createServer(app);
+const port = 3000;
+app.use(Express.json());
+app.use("/chat", Express.static("public"));
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -12,11 +21,6 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT
 });
-
-const express = require("express");
-const app = express();
-const port = 3000;
-app.use(express.json());
 
 // Main page (later login page)
 app.get("/", (req, res) => {
@@ -61,6 +65,6 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}.`);
 });
