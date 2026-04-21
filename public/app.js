@@ -1,3 +1,5 @@
+const ws = new WebSocket("ws://localhost:3000");
+
 // Get references to DOM elements from index.html
 const messageDiv = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
@@ -19,6 +21,15 @@ async function loadMessages() {
   messages.forEach(message => appendMessageToMessageDiv(message));
 }
 
+ws.addEventListener("message", (messageEvent) => {
+  try {
+    const message = JSON.parse(messageEvent.data);
+    appendMessageToMessageDiv(message);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 // Handle form submission (sending a new message)
 messageForm.addEventListener("submit", async (event) => {
   // Prevent page reload
@@ -30,6 +41,7 @@ messageForm.addEventListener("submit", async (event) => {
     sender: senderField.value
   };
   
+  /*
   // Insert message into messages table
   const response = await fetch("/api/messages", {
     method: "POST",
@@ -40,10 +52,18 @@ messageForm.addEventListener("submit", async (event) => {
   });
 
   const messageFromResponse = await response.json();
-  messageForm.reset();
+  */
 
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(newMessage));
+  }
+
+  messageForm.reset();
+  
   // Load new message into chat
+  /*
   appendMessageToMessageDiv(messageFromResponse);
+  */
 });
 
 // Initial load of messages when page opens
