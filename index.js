@@ -24,14 +24,7 @@ const pool = new Pool({
 
 // Main page (later login page)
 app.get("/", (req, res) => {
-  res.send(`Server is running on port ${port}...`);
-});
-
-// Chat start page
-app.use("/chat", express.static("public"));
-
-app.get("/chat", (res, req) => {
-  res.status(200);
+  res.status(200).send(`Server is running on port ${port}...`);
 });
 
 // API to display messages
