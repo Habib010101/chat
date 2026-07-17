@@ -191,8 +191,22 @@ app.use((req, res) => {
 
 const wss = new WebSocket.Server({ server });
 
-wss.on("connection", (ws) => {
-  console.log("Client connected.");
+wss.on("connection", (ws, req) => {
+  const expectedOrigin = `http://${req.headers.host}`;
+
+  if (req.headers.origin !== expectedOrigin) {
+    return ws.close(1008, "Invalid origin.");
+  }
+
+  sessionMiddleware(req, {}, () => {
+    if (!req.session.userId) {
+      return ws.close(1008, "Invalid credentials.");
+    }
+
+    ws.userId = req.session.userId;
+    ws.username = req.session.username;
+
+    console.log(`Client connected: ${ws.username}`);
 
   ws.on("message", async (rawMessage) => {
     console.log(`Received message: ${rawMessage}`);
