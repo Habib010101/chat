@@ -111,16 +111,52 @@ app.post("/api/login", async (req, res) => {
   const usernameValue = username?.trim();
   const passwordValue = password?.trim();
 
-  if (!text || !sender) {
-    return res.status(400).json({ error: "Text and its sender are required!" });
+  if (!usernameValue || !passwordValue) {
+    return res.status(400).json({
+      error: "Username and password are required."
+    })
   }
 
-  // pool.query(INSERT INTO messages (text, sender) VALUES ( ${text}, ${sender}));
-  // If text is something malicious, do i want it merged into the SQL string itself?
   try {
-    // rows is an array with affected row(s)
-    const { rows } = await pool.query("INSERT INTO messages (text, sender, created_at) VALUES ($1, $2, NOW()) RETURNING *", [text, sender]);
-    res.status(201).json(rows[0]);
+    const { rows, rowCount } = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [usernameValue]);
+
+    if (rowCount < 1) {
+      return res.status(401).json({
+        message: "Invalid credentials."
+      });
+    }
+
+    const user = rows[0];
+
+    const passwordMatches = await Bcrypt.compare(passwordValue, user.password_hash);
+
+    if (!passwordMatches) {
+      return res.status(401).json({
+        message: "Invalid credentials."
+      });
+    }
+
+    req.session.userId = user.id;
+    req.session.username = user.username;
+
+    res.status(200).json({
+      message: "Login successful."
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Something went wrong..."
+    });
+  }
+});
+
+// API to display messages
+app.get("/api/messages", requireLogin, async (req, res) => {
+
+  try {
+    const { rows } = await pool.query("SELECT messages.id, messages.text, messages.created_at, users.username FROM messages JOIN users ON messages.sender_id = users.id ORDER BY created_at");
+    res.status(200).json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Error!"});
