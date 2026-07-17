@@ -159,7 +159,9 @@ app.get("/api/messages", requireLogin, async (req, res) => {
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: "Error!"});
+    res.status(500).send({
+      error: "Something went wrong..."
+    });
   }
 });
 */
