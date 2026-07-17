@@ -164,10 +164,29 @@ app.get("/api/messages", requireLogin, async (req, res) => {
     });
   }
 });
-*/
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}.`);
+app.post("/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Logout failed." });
+    }
+
+    res.clearCookie("connect.sid");
+    res.status(200).json({ message: "Logged out." });
+  });
+});
+
+app.get("/chat", requireLogin, (req, res) => {
+  res.sendFile(Path.join(__dirname, "public", "chat.html"));
+});
+
+app.get("/error", (req, res) => {
+  res.status(500).sendFile(Path.join(__dirname, "public", "500.html"));
+});
+
+app.use((req, res) => {
+  res.status(404).sendFile(Path.join(__dirname, "public", "404.html"));
 });
 
 const wss = new WebSocket.Server({ server });
