@@ -47,11 +47,35 @@ function requireLogin(req, res, next) {
 
 // Main page (later login page)
 app.get("/", (req, res) => {
-  res.status(200).send(`Server is running on port ${port}...`);
+  res.sendFile(Path.join(__dirname, 'public', 'homepage.html'));
 });
 
-// API to display messages
-app.get("/api/messages", async (req, res) => {
+app.get("/register", async (req, res) => {
+  res.sendFile(Path.join(__dirname, 'public', 'register.html'));
+});
+
+app.get("/login", (req, res) => {
+  res.sendFile(Path.join(__dirname, "public", "login.html"));
+});
+
+app.post("/api/register", async (req, res) => {
+  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  const passwordRegex = /^\S{8,30}$/;
+  const saltRounds = 10;
+
+  const {username, password} = req.body;
+  const usernameValue = username?.trim();
+  const passwordValue = password?.trim();
+
+  const isUsernameValid = usernameRegex.test(usernameValue);
+  const isPasswordValid = passwordRegex.test(passwordValue);
+
+  if (!isUsernameValid || !isPasswordValid) {
+    return res.status(400).json({
+      error: "Invalid username or password format."
+    });
+  }
+
   try {
     const { rows } = await pool.query("SELECT * FROM messages ORDER BY created_at");
     res.status(200).json(rows);
