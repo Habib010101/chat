@@ -218,18 +218,32 @@ wss.on("connection", (ws, req) => {
         return;
       }
 
-      const { rows } = await pool.query("INSERT INTO messages (text, sender, created_at) VALUES ($1, $2, NOW()) RETURNING *", [text, sender]);
+      const { rows } = await pool.query("INSERT INTO messages (text, sender_id) VALUES ($1, $2) RETURNING *", [text.trim(), ws.userId]);
+
+      const message = {
+        ...rows[0],
+        username: ws.username
+      };
+
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(rows[0]));
+          client.send(JSON.stringify(message));
         }
       });
     } catch (err) {
       console.error(err);
     }
   });
-
-  ws.on("close", () => {
+  
+    ws.on("close", () => {
     console.log("Client disconnected.");
+    });
   });
 });
+
+
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}.`);
+});
+
+
