@@ -1,4 +1,4 @@
-const ws = new WebSocket("ws://localhost:3000");
+const ws = new WebSocket(`ws://${window.location.host}`);
 
 // Get references to DOM elements from index.html
 const messageDiv = document.getElementById("messages");
@@ -38,21 +38,7 @@ messageForm.addEventListener("submit", async (event) => {
   // Create message object from input values
   const newMessage = {
     text: textField.value,
-    sender: senderField.value
   };
-  
-  /*
-  // Insert message into messages table
-  const response = await fetch("/api/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(newMessage)
-  });
-
-  const messageFromResponse = await response.json();
-  */
 
   if (ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify(newMessage));
