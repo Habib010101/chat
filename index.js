@@ -208,8 +208,8 @@ wss.on("connection", (ws, req) => {
 
     console.log(`Client connected: ${ws.username}`);
 
-  ws.on("message", async (rawMessage) => {
-    console.log(`Received message: ${rawMessage}`);
+    ws.on("message", async (rawMessage) => {
+    console.log(`Received message from ${ws.username} (${ws.userId}): ${rawMessage}`);
 
     try {
       const {text, sender} = JSON.parse(rawMessage.toString());
