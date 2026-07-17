@@ -8,7 +8,7 @@ const logoutButton = document.getElementById("logout-button");
 
 function appendMessageToMessageDiv(message) {
   const e = document.createElement("p");
-  e.textContent = `${message.sender}: ${message.text} (${message.created_at})`;
+  e.textContent = `${message.username}: ${message.text} (${message.created_at})`;
   messageDiv.appendChild(e);
 }
 
