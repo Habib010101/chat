@@ -37,6 +37,14 @@ const pool = new Pool({
   port: process.env.DB_PORT
 });
 
+function requireLogin(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+
+  next();
+}
+
 // Main page (later login page)
 app.get("/", (req, res) => {
   res.status(200).send(`Server is running on port ${port}...`);
