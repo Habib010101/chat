@@ -4,7 +4,7 @@ const ws = new WebSocket("ws://localhost:3000");
 const messageDiv = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
 const textField = document.getElementById("text");
-const senderField = document.getElementById("sender");
+const logoutButton = document.getElementById("logout-button");
 
 function appendMessageToMessageDiv(message) {
   const e = document.createElement("p");
@@ -64,6 +64,23 @@ messageForm.addEventListener("submit", async (event) => {
   /*
   appendMessageToMessageDiv(messageFromResponse);
   */
+});
+
+logoutButton.addEventListener("click", async () => {
+  try {
+    const response = await fetch("api/logout", {
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      return window.location.href = "/error";
+    }
+
+    window.location.href = "/login";
+
+  } catch (err) {
+    window.location.href = "/error";
+  }
 });
 
 // Initial load of messages when page opens
