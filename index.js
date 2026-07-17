@@ -99,15 +99,17 @@ app.post("/api/register", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: "Error!"});
+    res.status(500).json({
+      error: "Something went wrong..."
+    });
   }
 });
 
-// API to send message
-// Now messages are being sent through web socket
-/*
-app.post("/api/messages", async (req, res) => {
-  const { text, sender } = req.body;
+app.post("/api/login", async (req, res) => {
+  const {username, password} = req.body;
+
+  const usernameValue = username?.trim();
+  const passwordValue = password?.trim();
 
   if (!text || !sender) {
     return res.status(400).json({ error: "Text and its sender are required!" });
