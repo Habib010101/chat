@@ -1,11 +1,13 @@
-const Express = require("express");
-const Http = require("http");
-const WebSocket = require("ws");
-const Path = require("path");
-const { Pool } = require("pg");
-require("dotenv").config({
+const Express = require('express');
+const Http = require('http');
+const WebSocket = require('ws');
+const Bcrypt = require('bcrypt');
+const session = require('express-session')
+const Path = require('path');
+const { Pool } = require('pg');
+require('dotenv').config({
   override: true,
-  path: Path.join( __dirname, ".env")
+  path: Path.join(__dirname, '.env')
 });
 
 const app = Express();
