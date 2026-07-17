@@ -77,8 +77,26 @@ app.post("/api/register", async (req, res) => {
   }
 
   try {
-    const { rows } = await pool.query("SELECT * FROM messages ORDER BY created_at");
-    res.status(200).json(rows);
+    const { rowCount } = await pool.query("SELECT 1 FROM users WHERE username = $1", [usernameValue]);
+
+    if (rowCount > 0) {
+      return res.status(409).json({
+        message: "Username taken."
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: "Something went wrong..."
+    });
+  }
+
+  try {
+    const passwordHash = await Bcrypt.hash(passwordValue, saltRounds);
+    await pool.query("INSERT INTO users (username, password_hash) VALUES ($1, $2)", [usernameValue, passwordHash]);
+    res.status(201).json({
+      message: "Account created successfully."
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Error!"});
