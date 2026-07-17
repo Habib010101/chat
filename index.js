@@ -212,9 +212,9 @@ wss.on("connection", (ws, req) => {
     console.log(`Received message from ${ws.username} (${ws.userId}): ${rawMessage}`);
 
     try {
-      const {text, sender} = JSON.parse(rawMessage.toString());
+      const {text} = JSON.parse(rawMessage.toString());
 
-      if (!text?.trim() || !sender?.trim()) {
+      if (!text?.trim()) {
         return;
       }
 
