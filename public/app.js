@@ -26,7 +26,7 @@ ws.addEventListener("message", (messageEvent) => {
     const message = JSON.parse(messageEvent.data);
     appendMessageToMessageDiv(message);
   } catch (err) {
-    console.error(err);
+    window.location.href = "/error";
   }
 });
 
